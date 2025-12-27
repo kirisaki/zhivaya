@@ -65,7 +65,14 @@ import Footer from '../components/Footer.astro';
 				border: 0 solid var(--pink);
 				border-left-width: 10px;
 				padding: 0.5rem 1rem;
+				margin: 0 0 0.5rem 0;
+			}
+
+			.description {
 				margin: 0 0 2rem 0;
+				padding: 0 1rem;
+				color: var(--gray);
+				font-size: 0.875rem;
 			}
 
 			@media screen and (max-width: 600px) {
@@ -94,6 +101,7 @@ import Footer from '../components/Footer.astro';
 	<body>
 		<div class="container">
 			<h1>Zhivaya</h1>
+			<p class="description">Monitoring hydroponic cultivation</p>
 			<SensorViewer client:load />
 			<Footer />
 		</div>
