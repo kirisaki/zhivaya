@@ -105,7 +105,7 @@ export default function SensorViewer() {
 
   return (
     <div>
-      {/* Image Display */}
+      {/* Image Display with Overlay Data */}
       <div
         style={{
           marginBottom: '1.5rem',
@@ -144,44 +144,74 @@ export default function SensorViewer() {
             }}
           />
         )}
-      </div>
 
-      {/* Sensor Data Display */}
-      <div
-        class="sensor-data-grid"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
-          gap: '1rem',
-          marginBottom: '1.5rem',
-          padding: '1rem',
-          backgroundColor: 'var(--black)',
-          borderRadius: '4px',
-          border: '1px solid var(--gray)',
-        }}
-      >
-        <div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
-            Time
+        {/* Sensor Data Overlay */}
+        <div
+          class="sensor-data-grid"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            gap: '1rem',
+            padding: '1rem',
+          }}
+        >
+          <div>
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginBottom: '0.25rem',
+              textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
+            }}>
+              Time
+            </div>
+            <div style={{
+              fontSize: '0.875rem',
+              color: 'rgba(255, 255, 255, 0.9)',
+              fontWeight: 'bold',
+              textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)',
+            }}>
+              {formatTime(currentData.time)}
+            </div>
           </div>
-          <div style={{ fontSize: '1rem', color: 'var(--white)' }}>
-            {formatTime(currentData.time)}
+          <div>
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginBottom: '0.25rem',
+              textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
+            }}>
+              Temperature
+            </div>
+            <div style={{
+              fontSize: '1.5rem',
+              color: 'rgba(255, 255, 255, 0.95)',
+              fontWeight: 'bold',
+              textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)',
+            }}>
+              {currentData.temp.toFixed(2)}°C
+            </div>
           </div>
-        </div>
-        <div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
-            Temperature
-          </div>
-          <div style={{ fontSize: '1.25rem', color: 'var(--pink)', fontWeight: 'bold' }}>
-            {currentData.temp.toFixed(2)}°C
-          </div>
-        </div>
-        <div>
-          <div style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
-            Humidity
-          </div>
-          <div style={{ fontSize: '1.25rem', color: 'var(--peach)', fontWeight: 'bold' }}>
-            {currentData.hum.toFixed(2)}%
+          <div>
+            <div style={{
+              fontSize: '0.75rem',
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginBottom: '0.25rem',
+              textShadow: '0 1px 3px rgba(0, 0, 0, 0.8)',
+            }}>
+              Humidity
+            </div>
+            <div style={{
+              fontSize: '1.5rem',
+              color: 'rgba(255, 255, 255, 0.95)',
+              fontWeight: 'bold',
+              textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)',
+            }}>
+              {currentData.hum.toFixed(2)}%
+            </div>
           </div>
         </div>
       </div>
