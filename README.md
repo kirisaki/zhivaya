@@ -16,6 +16,15 @@ npm install
 npm run dev
 ```
 
+## Deployment
+
+### Cloudflare Pages
+
+Build settings:
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Node version: 18 or later
+
 ## Tech Stack
 
 - Astro
