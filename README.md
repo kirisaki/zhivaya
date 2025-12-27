@@ -25,6 +25,36 @@ Build settings:
 - Build output directory: `dist`
 - Node version: 18 or later
 
+## Raspberry Pi Monitor Script
+
+The `scripts/monitor.sh` script captures images and sensor data from a Raspberry Pi.
+
+### Setup
+
+1. Copy the environment template:
+   ```sh
+   cp scripts/.env.example scripts/.env
+   ```
+
+2. Edit `scripts/.env` with your configuration:
+   - `SENSOR_URL`: Your sensor API endpoint
+   - `WORK_DIR`: Directory for storing images and data
+   - `R2_REMOTE`: Your rclone remote name
+   - `RCLONE_CONF`: Path to your rclone config
+
+3. Add to crontab (runs every 10 minutes):
+   ```sh
+   */10 * * * * cd /path/to/zhivaya/scripts && source .env && ./monitor.sh
+   ```
+
+### Requirements
+
+- Raspberry Pi with camera module
+- `rpicam-still` (libcamera)
+- `rclone` configured for Cloudflare R2
+- `jq` for JSON processing
+- `curl` for API requests
+
 ## Tech Stack
 
 - Astro
