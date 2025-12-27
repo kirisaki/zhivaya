@@ -113,13 +113,15 @@ export default function SensorViewer() {
           borderRadius: '4px',
           overflow: 'hidden',
           border: '1px solid var(--gray)',
+          aspectRatio: '4/3',
+          position: 'relative',
         }}
       >
         {showPlaceholder ? (
           <div
             style={{
               width: '100%',
-              aspectRatio: '4/3',
+              height: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -127,7 +129,7 @@ export default function SensorViewer() {
               fontSize: '1.25rem',
             }}
           >
-            {imageError ? '画像読み込みエラー' : '画像なし'}
+            {imageError ? 'Image Load Error' : 'No Image'}
           </div>
         ) : (
           <img
@@ -136,7 +138,8 @@ export default function SensorViewer() {
             onError={() => setImageError(true)}
             style={{
               width: '100%',
-              height: 'auto',
+              height: '100%',
+              objectFit: 'contain',
               display: 'block',
             }}
           />
