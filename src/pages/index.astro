@@ -1,16 +1,93 @@
 ---
-
+import SensorViewer from '../components/SensorViewer';
 ---
 
-<html lang="en">
+<html lang="ja">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Zhivaya - Sensor Viewer</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap"
+			rel="stylesheet"
+		/>
+		<style is:global>
+			:root {
+				--black: #000;
+				--dark: #222;
+				--gray: #888;
+				--white: #f0f0f0;
+				--pink: #fc2063;
+				--peach: #fd5185;
+				--ease: 0.2s;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				background-color: var(--dark);
+				background-image: url('../assets/back.svg');
+				color: var(--white);
+				font-size: 11.5pt;
+				font-family: 'Josefin Sans', 'M PLUS 1p', sans-serif;
+				letter-spacing: -0.4pt;
+				line-height: 1.7rem;
+			}
+
+			.container {
+				width: 60vw;
+				margin: 0 auto;
+				padding: 2rem 1rem;
+			}
+
+			h1 {
+				font-weight: 700;
+				font-size: 2rem;
+				border: 0 solid var(--pink);
+				border-left-width: 10px;
+				padding: 0.5rem 1rem;
+				margin: 0 0 2rem 0;
+			}
+
+			@media screen and (max-width: 600px) {
+				body {
+					font-size: 10pt;
+				}
+				.container {
+					width: 100vw;
+					padding: 1rem 0.5rem;
+				}
+				h1 {
+					font-size: 1.5rem;
+					margin-bottom: 1rem;
+				}
+			}
+
+			/* Sensor viewer responsive styles */
+			@media screen and (max-width: 480px) {
+				.sensor-data-grid {
+					grid-template-columns: 1fr !important;
+					gap: 0.75rem !important;
+				}
+			}
+		</style>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<div class="container">
+			<h1>Zhivaya</h1>
+			<SensorViewer client:load />
+		</div>
 	</body>
 </html>
