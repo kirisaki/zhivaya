@@ -42,6 +42,20 @@ The `scripts/monitor.sh` script captures images and sensor data from a Raspberry
    */10 * * * * /path/to/zhivaya/scripts/monitor.sh
    ```
 
+### Recovery
+
+If `sensor_data.json` gets corrupted, you can rebuild it from R2 image files:
+
+```sh
+cd scripts
+./recover_sensor_data.sh
+```
+
+This will:
+- Fetch all images from R2
+- Recover `temp` and `hum` from `sensor_log.csv` if available
+- Create entries with `null` values for missing sensor data
+
 ### Requirements
 
 - Raspberry Pi with camera module
