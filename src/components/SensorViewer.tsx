@@ -3,8 +3,8 @@ import { useState, useEffect } from 'preact/hooks';
 interface SensorData {
   time: string;
   img: string | null;
-  temp: number;
-  hum: number;
+  temp: number | null;
+  hum: number | null;
 }
 
 const STORAGE_BASE = 'https://storage.zhivaya.dev';
@@ -194,7 +194,7 @@ export default function SensorViewer() {
               fontWeight: 'bold',
               textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)',
             }}>
-              {currentData.temp.toFixed(2)}°C
+              {currentData.temp !== null ? `${currentData.temp.toFixed(2)}°C` : 'N/A'}
             </div>
           </div>
           <div>
@@ -212,7 +212,7 @@ export default function SensorViewer() {
               fontWeight: 'bold',
               textShadow: '0 1px 4px rgba(0, 0, 0, 0.9)',
             }}>
-              {currentData.hum.toFixed(2)}%
+              {currentData.hum !== null ? `${currentData.hum.toFixed(2)}%` : 'N/A'}
             </div>
           </div>
         </div>
