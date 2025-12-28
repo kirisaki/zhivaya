@@ -11,6 +11,7 @@ const STORAGE_BASE = 'https://storage.zhivaya.dev';
 const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 export default function SensorViewer() {
+  const [allData, setAllData] = useState<SensorData[]>([]);
   const [sensorData, setSensorData] = useState<SensorData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -24,7 +25,8 @@ export default function SensorViewer() {
         throw new Error(`Failed to fetch: ${response.status}`);
       }
       const data: SensorData[] = await response.json();
-      // Filter only data with images
+      setAllData(data);
+      // Filter only data with images for slider
       const dataWithImages = data.filter(item => item.img !== null);
       setSensorData(dataWithImages);
       // Set to latest data (last index)
@@ -89,6 +91,7 @@ export default function SensorViewer() {
   }
 
   const currentData = sensorData[currentIndex];
+  const latestData = allData.length > 0 ? allData[allData.length - 1] : null;
   const hasImage = currentData.img !== null;
   const imageUrl = hasImage ? `${STORAGE_BASE}/${currentData.img}` : null;
   const showPlaceholder = !hasImage || imageError;
@@ -107,6 +110,55 @@ export default function SensorViewer() {
 
   return (
     <div>
+      {/* Latest Sensor Data Display */}
+      {latestData && (
+        <div
+          style={{
+            marginBottom: '1.5rem',
+            padding: '1rem',
+            backgroundColor: 'var(--black)',
+            borderRadius: '4px',
+            border: '1px solid var(--gray)',
+          }}
+        >
+          <div style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.75rem' }}>
+            Latest Sensor Data
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gap: '1rem',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
+                Time
+              </div>
+              <div style={{ fontSize: '0.875rem', color: 'var(--white)', fontWeight: 'bold' }}>
+                {formatTime(latestData.time)}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
+                Temperature
+              </div>
+              <div style={{ fontSize: '1.25rem', color: 'var(--pink)', fontWeight: 'bold' }}>
+                {latestData.temp !== null ? `${latestData.temp.toFixed(2)}°C` : 'N/A'}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
+                Humidity
+              </div>
+              <div style={{ fontSize: '1.25rem', color: 'var(--peach)', fontWeight: 'bold' }}>
+                {latestData.hum !== null ? `${latestData.hum.toFixed(2)}%` : 'N/A'}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Image Display with Overlay Data */}
       <div
         style={{
@@ -125,13 +177,16 @@ export default function SensorViewer() {
               width: '100%',
               height: '100%',
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'var(--gray)',
               fontSize: '1.25rem',
+              gap: '0.5rem',
             }}
           >
-            {imageError ? 'Image Load Error' : 'No Image'}
+            <div style={{ fontSize: '1.5rem' }}>🌙</div>
+            <div>Night Mode - Camera Off</div>
           </div>
         ) : (
           <img
@@ -220,6 +275,9 @@ export default function SensorViewer() {
 
       {/* Slider Control */}
       <div>
+        <div style={{ fontSize: '0.875rem', color: 'var(--gray)', marginBottom: '0.5rem' }}>
+          Image History (Daytime Only)
+        </div>
         <div
           style={{
             display: 'flex',
@@ -229,7 +287,7 @@ export default function SensorViewer() {
             color: 'var(--gray)',
           }}
         >
-          <span>Past</span>
+          <span>Oldest</span>
           <span style={{ color: 'var(--white)' }}>
             {currentIndex + 1} / {sensorData.length}
           </span>
