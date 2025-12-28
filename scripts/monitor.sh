@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Configuration
-WORK_DIR="${WORK_DIR:-/mnt/hdd/plants}"
-R2_REMOTE="${R2_REMOTE:-zhivaya:zhivaya}"
-SENSOR_URL="${SENSOR_URL:-http://localhost/api/sensor}"
-RCLONE_CONF="${RCLONE_CONF:-$HOME/.config/rclone/rclone.conf}"
+WORK_DIR="/mnt/hdd/plants"
+R2_REMOTE="zhivaya:zhivaya"
+SENSOR_URL="http://192.168.100.12/api/sensor"
+RCLONE_CONF="$HOME/.config/rclone/rclone.conf"
 
 START_HOUR=6
 END_HOUR=23

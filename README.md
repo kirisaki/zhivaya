@@ -31,20 +31,15 @@ The `scripts/monitor.sh` script captures images and sensor data from a Raspberry
 
 ### Setup
 
-1. Copy the environment template:
-   ```sh
-   cp scripts/.env.example scripts/.env
-   ```
-
-2. Edit `scripts/.env` with your configuration:
+1. Edit `scripts/monitor.sh` configuration section:
    - `SENSOR_URL`: Your sensor API endpoint
    - `WORK_DIR`: Directory for storing images and data
    - `R2_REMOTE`: Your rclone remote name
    - `RCLONE_CONF`: Path to your rclone config
 
-3. Add to crontab (runs every 10 minutes):
+2. Add to crontab (runs every 10 minutes):
    ```sh
-   */10 * * * * cd /path/to/zhivaya/scripts && source .env && ./monitor.sh
+   */10 * * * * /path/to/zhivaya/scripts/monitor.sh
    ```
 
 ### Requirements
