@@ -116,8 +116,6 @@ export default function SensorViewer() {
           style={{
             marginBottom: '1.5rem',
             padding: '1rem',
-            backgroundColor: 'var(--black)',
-            borderRadius: '4px',
             border: '1px solid var(--gray)',
           }}
         >
@@ -143,7 +141,7 @@ export default function SensorViewer() {
               <div style={{ fontSize: '0.75rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
                 Temperature
               </div>
-              <div style={{ fontSize: '1.25rem', color: 'var(--pink)', fontWeight: 'bold' }}>
+              <div style={{ fontSize: '1.25rem', color: 'var(--white)', fontWeight: 'bold' }}>
                 {latestData.temp !== null ? `${latestData.temp.toFixed(2)}°C` : 'N/A'}
               </div>
             </div>
@@ -151,7 +149,7 @@ export default function SensorViewer() {
               <div style={{ fontSize: '0.75rem', color: 'var(--gray)', marginBottom: '0.25rem' }}>
                 Humidity
               </div>
-              <div style={{ fontSize: '1.25rem', color: 'var(--peach)', fontWeight: 'bold' }}>
+              <div style={{ fontSize: '1.25rem', color: 'var(--white)', fontWeight: 'bold' }}>
                 {latestData.hum !== null ? `${latestData.hum.toFixed(2)}%` : 'N/A'}
               </div>
             </div>
@@ -164,7 +162,6 @@ export default function SensorViewer() {
         style={{
           marginBottom: '1.5rem',
           backgroundColor: 'var(--black)',
-          borderRadius: '4px',
           overflow: 'hidden',
           border: '1px solid var(--gray)',
           aspectRatio: '4/3',
