@@ -24,9 +24,11 @@ export default function SensorViewer() {
         throw new Error(`Failed to fetch: ${response.status}`);
       }
       const data: SensorData[] = await response.json();
-      setSensorData(data);
+      // Filter only data with images
+      const dataWithImages = data.filter(item => item.img !== null);
+      setSensorData(dataWithImages);
       // Set to latest data (last index)
-      setCurrentIndex(data.length - 1);
+      setCurrentIndex(dataWithImages.length - 1);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
