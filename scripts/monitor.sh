@@ -54,23 +54,48 @@ else
     echo "Night mode: Sensor logging only."
 fi
 
-# 3. Save CSV and JSON
+# 3. Save CSV and update JSON from R2
 echo "${DATE_STR},${IMG_FILENAME},${TEMP},${HUM}" >> "$SENSOR_LOG"
 
-jq -R 'split(",") | {
-    time: .[0],
-    img: (if .[1] == "" then null else .[1] end),
-    temp: (if .[2] == "null" then null else (.[2] | tonumber) end),
-    hum: (if .[3] == "null" then null else (.[3] | tonumber) end)
-}' "$SENSOR_LOG" | jq -s . > "$SENSOR_JSON"
+# Download existing sensor_data.json from R2 (source of truth)
+if rclone copy "$R2_REMOTE/$SENSOR_JSON" . --config "$RCLONE_CONF" 2>/dev/null; then
+    echo "Downloaded existing sensor_data.json from R2"
+else
+    echo "No existing sensor_data.json, creating new one"
+    echo "[]" > "$SENSOR_JSON"
+fi
 
+# Append new data entry to JSON
+NEW_ENTRY=$(jq -n \
+    --arg time "$DATE_STR" \
+    --arg img "${IMG_FILENAME:-null}" \
+    --arg temp "${TEMP}" \
+    --arg hum "${HUM}" \
+    '{
+        time: $time,
+        img: (if $img == "null" or $img == "" then null else $img end),
+        temp: (if $temp == "null" then null else ($temp | tonumber) end),
+        hum: (if $hum == "null" then null else ($hum | tonumber) end)
+    }')
+
+jq --argjson new "$NEW_ENTRY" '. + [$new]' "$SENSOR_JSON" > "${SENSOR_JSON}.tmp"
+mv "${SENSOR_JSON}.tmp" "$SENSOR_JSON"
+
+# Upload updated JSON to R2
 rclone copy "$SENSOR_JSON" "$R2_REMOTE" --config "$RCLONE_CONF"
 
 # 4. Update images JSON from R2 bucket (source of truth)
-rclone lsjson "$R2_REMOTE" --config "$RCLONE_CONF" | \
-  jq '[.[] | select(.Name | startswith("img_") and endswith(".jpg")) | .Name] | sort' \
-  > "$IMAGES_JSON"
+echo "Fetching image list from R2..."
+if rclone lsjson "$R2_REMOTE" --config "$RCLONE_CONF" | \
+  jq -e '[.[] | select(.Name | test("^img_.*\\.jpg$")) | .Name] | sort' \
+  > "$IMAGES_JSON"; then
 
-rclone copy "$IMAGES_JSON" "$R2_REMOTE" --config "$RCLONE_CONF"
+  IMAGE_COUNT=$(jq 'length' "$IMAGES_JSON")
+  echo "Found $IMAGE_COUNT images in R2"
+
+  rclone copy "$IMAGES_JSON" "$R2_REMOTE" --config "$RCLONE_CONF"
+else
+  echo "Error: Failed to generate images.json"
+fi
 
 echo "Log updated: ${TEMP}C / ${HUM}%"
