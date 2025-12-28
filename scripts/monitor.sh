@@ -49,10 +49,6 @@ if [ "$CURRENT_HOUR" -ge "$START_HOUR" ] && [ "$CURRENT_HOUR" -le "$END_HOUR" ];
     # IMPORTANT: Upload latest.jpg as file (not directory)
     rclone copyto "latest.jpg" "$R2_REMOTE/latest.jpg" --config "$RCLONE_CONF"
 
-    # Update images JSON list
-    ls -1 img_*.jpg | sort | jq -R . | jq -s . > "$IMAGES_JSON"
-    rclone copy "$IMAGES_JSON" "$R2_REMOTE" --config "$RCLONE_CONF"
-
     echo "Snapshot taken: $IMG_FILENAME"
 else
     echo "Night mode: Sensor logging only."
@@ -68,6 +64,13 @@ jq -R 'split(",") | {
     hum: (if .[3] == "null" then null else (.[3] | tonumber) end)
 }' "$SENSOR_LOG" | jq -s . > "$SENSOR_JSON"
 
-rclone copy "$SENSOR_JSON" "$R2_REMOTE"
+rclone copy "$SENSOR_JSON" "$R2_REMOTE" --config "$RCLONE_CONF"
+
+# 4. Update images JSON from R2 bucket (source of truth)
+rclone lsjson "$R2_REMOTE" --config "$RCLONE_CONF" | \
+  jq '[.[] | select(.Name | startswith("img_") and endswith(".jpg")) | .Name] | sort' \
+  > "$IMAGES_JSON"
+
+rclone copy "$IMAGES_JSON" "$R2_REMOTE" --config "$RCLONE_CONF"
 
 echo "Log updated: ${TEMP}C / ${HUM}%"
