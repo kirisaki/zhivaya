@@ -7,8 +7,25 @@ interface SensorData {
   hum: number | null;
 }
 
+interface PlantLabel {
+  name: string;
+  left: string;  // CSS percentage or pixel value
+  top: string;   // CSS percentage or pixel value
+}
+
 const STORAGE_BASE = 'https://storage.zhivaya.dev';
 const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+// Plant labels with positions (adjust as needed)
+const PLANT_LABELS: PlantLabel[] = [
+  // Front row (left to right)
+  { name: 'Sunny Lettuce', left: '12%', top: '70%' },
+  { name: 'Arugula', left: '45%', top: '70%' },
+  { name: 'Cilantro', left: '85%', top: '70%' },
+  // Back row (left to right)
+  { name: 'Italian Parsley', left: '25%', top: '40%' },
+  { name: 'Swiss Chard', left: '75%', top: '40%' },
+];
 
 export default function SensorViewer() {
   const [allData, setAllData] = useState<SensorData[]>([]);
@@ -17,6 +34,12 @@ export default function SensorViewer() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
+  const [showPlantLabels, setShowPlantLabels] = useState(() => {
+    // Load from localStorage, default to true (only in browser)
+    if (typeof window === 'undefined') return true;
+    const saved = localStorage.getItem('showPlantLabels');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
 
   const fetchData = async () => {
     try {
@@ -57,6 +80,13 @@ export default function SensorViewer() {
   useEffect(() => {
     setImageError(false);
   }, [currentIndex]);
+
+  // Save plant labels visibility to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('showPlantLabels', JSON.stringify(showPlantLabels));
+    }
+  }, [showPlantLabels]);
 
   if (loading) {
     return (
@@ -268,6 +298,56 @@ export default function SensorViewer() {
             </div>
           </div>
         </div>
+
+        {/* Plant Labels Overlay */}
+        {!showPlaceholder && showPlantLabels && PLANT_LABELS.map((plant, index) => (
+          <div
+            key={index}
+            style={{
+              position: 'absolute',
+              left: plant.left,
+              top: plant.top,
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              color: 'rgba(255, 255, 255, 0.95)',
+              padding: '0.375rem 0.75rem',
+              borderRadius: '4px',
+              fontSize: '0.75rem',
+              fontWeight: 'bold',
+              textShadow: '0 1px 3px rgba(0, 0, 0, 0.9)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              whiteSpace: 'nowrap',
+              pointerEvents: 'none',
+            }}
+          >
+            {plant.name}
+          </div>
+        ))}
+      </div>
+
+      {/* Plant Labels Toggle */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            cursor: 'pointer',
+            fontSize: '0.875rem',
+            color: 'var(--white)',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={showPlantLabels}
+            onChange={(e) => setShowPlantLabels((e.target as HTMLInputElement).checked)}
+            style={{
+              cursor: 'pointer',
+              accentColor: 'var(--pink)',
+            }}
+          />
+          <span>Show Plant Labels</span>
+        </label>
       </div>
 
       {/* Slider Control */}
